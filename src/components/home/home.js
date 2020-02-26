@@ -68,8 +68,8 @@ export const HomePage = (props) => {
             </Button>
           </Container>
           <Tabs style={{ width: '100%', background: cyan[700] }} variant="fullWidth" value={tabValue}>
-            <Tab style={{ color: grey[50] }} label={`Tasks log`} component={NavLink} to="/" />
-            <Tab style={{ color: grey[50] }} label={`Tasks chart`} component={NavLink} to="/tasks-chart" />
+            <Tab style={{ color: grey[50] }} label={`Tasks log`} component={NavLink} to="/todoList/" />
+            <Tab style={{ color: grey[50] }} label={`Tasks chart`} component={NavLink} to="/todoList/tasks-chart" />
           </Tabs>
           <Route exact path="/todoList/" component={tabMainLog} />
           <Route path="/todoList/tasks-chart" component={tabMainChart} />

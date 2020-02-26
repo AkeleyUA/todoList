@@ -21,7 +21,7 @@ export const ErrorIdTask = (props) => {
           type="button"
           color="primary"
           component={NavLink}
-          to="/"
+          to="/todoList/"
         >
           Home
         </Button>

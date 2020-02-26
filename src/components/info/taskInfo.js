@@ -60,7 +60,7 @@ export const TaskInfo = (props) => {
           type="button"
           color="primary"
           component={NavLink}
-          to="/"
+          to="/todoList/"
         >
           Home
         </Button>
