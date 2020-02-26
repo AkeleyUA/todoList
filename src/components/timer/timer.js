@@ -218,9 +218,9 @@ class Timer extends React.Component {
   render() {
     return (
       <>
-        <Route exact path="/" component={this.homePage} />
-        <Route path="/task/:id" component={this.taskInfo} />
-        <Route path="/tasks-chart" component={this.homePage} />
+        <Route exact path="/todoList/" component={this.homePage} />
+        <Route path="/todoList/task/:id" component={this.taskInfo} />
+        <Route path="/todoList/tasks-chart" component={this.homePage} />
       </>
     );
   }
