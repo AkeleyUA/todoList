@@ -4,10 +4,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createStore } from 'redux';
 import Timer from './components/timer';
-import reduser from './redusers/index';
+import reducer from './reducers/index';
 
 export const store = createStore(
-  reduser,
+  reducer,
   // eslint-disable-next-line no-underscore-dangle
   window.__REDUX_DEVTOOLS_EXTENSION__
   // eslint-disable-next-line no-underscore-dangle

@@ -54,7 +54,7 @@ const TaskInfo = (props) => {
                 onClick={() => {
                   deleteTask(task.id);
                 }}
-                to="/"
+                to="/todoList/"
                 color="primary"
               >
                 Delete

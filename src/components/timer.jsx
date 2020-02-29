@@ -190,21 +190,17 @@ class Timer extends React.Component {
     }
   }
 
-  taskInfo = (props) => {
+  infoPage = (props) => {
     const { deleteTask, tasks } = this.props;
     let mustReturn = <ErrorIdTask paramsId={props.match.params.id} />;
-
     if (tasks.length > 0) {
       tasks.map((task) => {
         if (+props.match.params.id === task.id) {
-          mustReturn = () => (
-            <TaskInfo deleteTask={deleteTask} task={task} timeToString={this.timeToString} />
-          );
+          mustReturn = <TaskInfo deleteTask={deleteTask} task={task} timeToString={this.timeToString} />;
         }
         return task;
       });
     }
-
     return mustReturn;
   }
 
@@ -257,8 +253,8 @@ class Timer extends React.Component {
   render() {
     return (
       <>
-        <Route exact path="/todoList/" component={(this.homePage)} />
-        <Route path="/todoList/task/:id" component={this.taskInfo} />
+        <Route exact path="/todoList/" component={this.homePage} />
+        <Route path="/todoList/task/:id" component={this.infoPage} />
         <Route path="/todoList/tasks-chart" component={this.homePage} />
       </>
     );
