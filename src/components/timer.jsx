@@ -4,24 +4,23 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 
-import MyModal from '../modal/modal';
-import TabMainLog from '../tabs/tabMainLog';
-import TabMainCharts from '../tabs/tabMainCharts';
-import HomePage from '../../pages/home';
-import ErrorIdTask from '../../pages/error';
-import TaskInfo from '../../pages/taskInfo';
+import MyModal from './modal';
+import TabMainLog from './tabMainLog';
+import TabMainCharts from './tabMainCharts';
+import HomePage from '../pages/home';
+import ErrorIdTask from '../pages/error';
+import TaskInfo from '../pages/taskInfo';
 import {
   timerBtnChangeValue,
-  verificationCanAddTask,
   changeErrorStatus,
   varificationInput,
-  addNewTask,
-  finishTask,
+  startedTaskCreation,
+  finishedTaskCreation,
   deleteTask,
   changeTabActive,
   modalControler,
   tasksGenerator,
-} from '../../store/actions';
+} from '../actions/actions';
 
 class Timer extends React.Component {
   constructor(props) {
@@ -54,63 +53,85 @@ class Timer extends React.Component {
   }
 
   addInterval = () => {
-    const { timerBtnChangeValue, addNewTask } = this.props;
-    const start = new Date();
-    localStorage.setItem('startLastTask', start.getTime());
-    localStorage.setItem('timerStatus', 'stop');
-    addNewTask({ start: start.getTime(), hour: start.getHours(), isCompleted: false });
+    const { timerBtnChangeValue, startedTaskCreation } = this.props;
+    const dataForTheTask = { start: new Date().getTime(), hour: new Date().getHours(), isCompleted: false };
+    const interval = setInterval(() => (
+      this.setState({ timer: new Date().getTime() - dataForTheTask.start })
+    ), 1000);
+
+    startedTaskCreation(dataForTheTask);
     timerBtnChangeValue('stop');
 
-    // Redux saga
-    const interval = setInterval(() => (this.setState({ timer: new Date().getTime() - start })), 1000);
+    localStorage.setItem('startLastTask', dataForTheTask.start);
+    localStorage.setItem('timerStatus', 'stop');
+
     this.setState({ interval });
   }
 
   removeInterval = () => {
+    const { interval } = this.state;
     const {
       canAddTask,
-      verificationCanAddTask,
+      varificationInput,
       changeErrorStatus,
       timerBtnChangeValue,
-      finishTask,
+      finishedTaskCreation,
       modalControler,
     } = this.props;
-    const { interval } = this.state;
+    const dataForTheTask = {
+      end: new Date().getTime(),
+      name: this.inputRef.current.value,
+      isCompleted: true,
+    };
 
     if (canAddTask) {
       clearInterval(interval);
-      this.setState({ timer: 0 });
       timerBtnChangeValue('start');
-      finishTask({
-        end: new Date().getTime(),
-        name: this.inputRef.current.value,
-        isCompleted: true,
-      });
+      finishedTaskCreation(dataForTheTask);
       changeErrorStatus(false);
-      verificationCanAddTask(false);
+      varificationInput(false);
+
       localStorage.removeItem('startLastTask');
       localStorage.removeItem('timerStatus');
+
       this.inputRef.current.value = '';
+
+      this.setState({ timer: 0 });
     } else {
-      changeErrorStatus(true);
       modalControler(true);
+      changeErrorStatus(true);
+      varificationInput(false);
+
       this.inputRef.current.focus();
     }
   }
 
   tabMainLog = () => {
-    const { deleteTask, changeTabActive, tasks, tabValue } = this.props;
+    const {
+      deleteTask,
+      changeTabActive,
+      tasks,
+      tabValue,
+    } = this.props;
+
     if (tabValue === 1) {
       changeTabActive(0);
     }
+
     return (
       <TabMainLog deleteTask={deleteTask} tasks={tasks} timeToString={this.timeToString} />
     );
   }
 
   tabMainChart = () => {
-    const { changeTabActive, tasks, tabValue, tasksGenerator } = this.props;
+    const {
+      changeTabActive,
+      tasks,
+      tabValue,
+      tasksGenerator
+    } = this.props;
     const chartsArray = [];
+
     if (tabValue === 0) {
       changeTabActive(1);
     }
@@ -125,12 +146,12 @@ class Timer extends React.Component {
         if (chart.hour === task.hour) {
           const spendToMinuts = (task.spend / 1000 / 60);
           if (spendToMinuts <= minutesLeft) {
-            chart.duration += Math.round(spendToMinuts);
+            chart.duration += Math.floor(spendToMinuts);
           } else if (spendToMinuts > minutesLeft) {
-            chart.duration += Math.round(minutesLeft);
+            chart.duration += Math.floor(minutesLeft);
             const excessMinutes = spendToMinuts - minutesLeft;
             if (index < 23) {
-              for (let i = 1; i < Math.floor(excessMinutes / 60); i++) {
+              for (let i = 1; i < Math.floor(excessMinutes / 60) + 1; i++) {
                 const nextIndex = index + i;
                 chartsArray[(nextIndex > 23 ? nextIndex - 24 : nextIndex)].duration = 60;
               }
@@ -138,15 +159,15 @@ class Timer extends React.Component {
                 (index + 1 + Math.floor(excessMinutes / 60) > 23
                   ? index + 1 + Math.floor(excessMinutes / 60) - 24
                   : index + 1 + Math.floor(excessMinutes / 60)
-                )].duration = Math.round(excessMinutes % 60);
+                )].duration = Math.floor(excessMinutes % 60);
             }
           }
         }
         return task;
       });
-      console.log(chart);
       return chart;
     });
+
     return (
       <TabMainCharts data={chartsArray} tasksGenerator={tasksGenerator} />
     );
@@ -154,20 +175,36 @@ class Timer extends React.Component {
 
   closeModal = () => {
     const { modalControler } = this.props;
+
     modalControler(false);
+  }
+
+  inputErrorControler = () => {
+    const { varificationInput, changeErrorStatus } = this.props;
+    if (this.inputRef.current.value < 1) {
+      varificationInput(false);
+      changeErrorStatus(true);
+    } else {
+      varificationInput(true);
+      changeErrorStatus(false);
+    }
   }
 
   taskInfo = (props) => {
     const { deleteTask, tasks } = this.props;
     let mustReturn = <ErrorIdTask paramsId={props.match.params.id} />;
+
     if (tasks.length > 0) {
       tasks.map((task) => {
         if (+props.match.params.id === task.id) {
-          mustReturn = <TaskInfo deleteTask={deleteTask} task={task} timeToString={this.timeToString} />;
+          mustReturn = () => (
+            <TaskInfo deleteTask={deleteTask} task={task} timeToString={this.timeToString} />
+          );
         }
         return task;
       });
     }
+
     return mustReturn;
   }
 
@@ -188,6 +225,7 @@ class Timer extends React.Component {
           timeToString={this.timeToString}
         />
         <HomePage
+          inputErrorControler={this.inputErrorControler}
           error={error}
           timer={timer}
           varificationInput={varificationInput}
@@ -208,7 +246,11 @@ class Timer extends React.Component {
     const hours = Math.floor((counter / 1000 / 60 / 60) % 60);
     const minuts = Math.floor((counter / 1000 / 60) % 60);
     const seconds = Math.floor((counter / 1000) % 60);
-    return `${(hours < 10 ? `0${hours}` : hours)}:${(minuts < 10 ? `0${minuts}` : minuts)}:${(seconds < 10 ? `0${seconds}` : seconds)} `;
+    return (
+      `${(hours < 10 ? `0${hours}` : hours)}:
+      ${(minuts < 10 ? `0${minuts}` : minuts)}:
+      ${(seconds < 10 ? `0${seconds}` : seconds)}`
+    );
   }
 
 
@@ -226,23 +268,20 @@ class Timer extends React.Component {
 
 const mapStateToProps = (state) => ({
   timerBtnValue: state.timerBtnValue,
-  counter: state.counter,
   canAddTask: state.canAddTask,
   error: state.error,
   tasks: state.tasks,
   tabValue: state.tabValue,
   modalIsOpen: state.modalIsOpen,
   isCompleted: state.isCompleted,
-  startLastTask: state.startLastTask,
 });
 
 const mapDispathToProps = (dispatch) => ({
   timerBtnChangeValue: bindActionCreators(timerBtnChangeValue, dispatch),
-  verificationCanAddTask: bindActionCreators(verificationCanAddTask, dispatch),
   changeErrorStatus: bindActionCreators(changeErrorStatus, dispatch),
   varificationInput: bindActionCreators(varificationInput, dispatch),
-  addNewTask: bindActionCreators(addNewTask, dispatch),
-  finishTask: bindActionCreators(finishTask, dispatch),
+  startedTaskCreation: bindActionCreators(startedTaskCreation, dispatch),
+  finishedTaskCreation: bindActionCreators(finishedTaskCreation, dispatch),
   deleteTask: bindActionCreators(deleteTask, dispatch),
   changeTabActive: bindActionCreators(changeTabActive, dispatch),
   modalControler: bindActionCreators(modalControler, dispatch),

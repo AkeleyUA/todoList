@@ -6,7 +6,6 @@ import { Route, NavLink } from 'react-router-dom';
 const HomePage = (props) => {
   const {
     error,
-    varificationInput,
     tabValue,
     timerBtnValue,
     inputRef,
@@ -16,6 +15,7 @@ const HomePage = (props) => {
     tabMainLog,
     tabMainChart,
     timer,
+    inputErrorControler,
   } = props;
 
   return (
@@ -49,7 +49,7 @@ const HomePage = (props) => {
               }}
               fullWidth={true}
               placeholder="Name of your task"
-              onChange={varificationInput}
+              onChange={inputErrorControler}
             />
             <Box className="circle" color="primary.main" fontWeight="500" fontSize={20}>
               <p className="time">{timeToString(timer)}</p>

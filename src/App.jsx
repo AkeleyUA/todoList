@@ -3,11 +3,11 @@ import './App.css';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createStore } from 'redux';
-import Timer from './components/timer/timer';
-import rootReducer from './store/reducer';
+import Timer from './components/timer';
+import reduser from './redusers/index';
 
 export const store = createStore(
-  rootReducer,
+  reduser,
   // eslint-disable-next-line no-underscore-dangle
   window.__REDUX_DEVTOOLS_EXTENSION__
   // eslint-disable-next-line no-underscore-dangle
