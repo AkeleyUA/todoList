@@ -1,5 +1,4 @@
-import { Schema as _Schema, model } from "mongoose";
-const Schema = _Schema;
+const Schema = require("mongoose");
 
 const StateShema = new Schema({
   timeRunning: String,
@@ -14,6 +13,5 @@ const StateShema = new Schema({
 });
 
 const State = model("state", StateShema);
-
 
 export default State;

@@ -1,24 +1,25 @@
-import React from 'react'
+import React from 'react';
 import { Button, Grid, Input, Container, Box, Tabs, Tab } from '@material-ui/core';
 import { cyan, grey, blue, red } from '@material-ui/core/colors';
 import { Route, NavLink } from 'react-router-dom';
 
-export const HomePage = (props) => {
+const HomePage = (props) => {
   const {
     error,
-    counter,
     varificationInput,
     tabValue,
-    timeRunning,
+    timerBtnValue,
     inputRef,
     timeToString,
     addInterval,
     removeInterval,
     tabMainLog,
-    tabMainChart
+    tabMainChart,
+    timer,
   } = props;
+
   return (
-    <div style={{height: 1000}}>
+    <div style={{ height: 1000 }}>
       <Grid
           container
           direction="column"
@@ -43,28 +44,28 @@ export const HomePage = (props) => {
                 className: "input-task-name",
                 style: {
                   color:(error ? red[500] : blue[900]),
-                  textAlign: "center" 
-                }
+                  textAlign: 'center',
+                },
               }}
               fullWidth={true}
               placeholder="Name of your task"
               onChange={varificationInput}
             />
             <Box className="circle" color="primary.main" fontWeight="500" fontSize={20}>
-              <p className="time">{timeToString(counter)}</p>
+              <p className="time">{timeToString(timer)}</p>
             </Box>
             <Button
               variant="text"
               color="primary"
               type="button"
-              onClick={timeRunning === 'start' ? addInterval : removeInterval}
+              onClick={timerBtnValue === 'start' ? addInterval : removeInterval}
               style={{
-                margin: "0 auto 30px auto",
-                display: "flex",
-                boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)'
+                margin: '0 auto 30px auto',
+                display: 'flex',
+                boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
               }}
             >
-              {timeRunning}
+              {timerBtnValue}
             </Button>
           </Container>
           <Tabs style={{ width: '100%', background: cyan[700] }} variant="fullWidth" value={tabValue}>
@@ -75,5 +76,7 @@ export const HomePage = (props) => {
           <Route path="/todoList/tasks-chart" component={tabMainChart} />
         </Grid>
       </div>
-  )
-}
+  );
+};
+
+export default HomePage;

@@ -1,13 +1,26 @@
-import React from 'react'
-import { Button, Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core';
+import React from 'react';
 import { grey, blue } from '@material-ui/core/colors';
 import { NavLink } from 'react-router-dom';
+import {
+  Button,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from '@material-ui/core';
 
-export const TaskInfo = (props) => {
-  const { deleteTask, task, timeToString} = props;
+const TaskInfo = (props) => {
+  const { deleteTask, task, timeToString } = props;
   return (
     <>
-      <Table className="tasks-log" style={{maxWidth:1440, margin: '0 auto'}}>
+      <Table
+        className="tasks-log"
+        style={{
+          maxWidth: 1440,
+          margin: '0 auto',
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell variant="body">ID</TableCell>
@@ -34,7 +47,7 @@ export const TaskInfo = (props) => {
             </TableCell>
             <TableCell variant="head"><div>{timeToString(task.spend)}</div></TableCell>
             <TableCell variant="head">
-              <Button 
+              <Button
                 style={{ background: grey[50], borderRadius: 0 }}
                 type="button"
                 component={NavLink}
@@ -47,11 +60,17 @@ export const TaskInfo = (props) => {
                 Delete
               </Button>
             </TableCell>
-          </TableRow> 
+          </TableRow>
         </TableBody>
       </Table>
-      <div style={{width: "100%", textAlign:"center", padding: "30px 0"}}>
-        <Button 
+      <div
+        style={{
+          width: '100%',
+          textAlign: 'center',
+          padding: '30px 0',
+        }}
+      >
+        <Button
           style={{
             background: grey[50],
             boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
@@ -66,6 +85,7 @@ export const TaskInfo = (props) => {
         </Button>
       </div>
     </>
-  )
-  
-}
+  );
+};
+
+export default TaskInfo;

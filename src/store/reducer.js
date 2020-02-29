@@ -1,11 +1,9 @@
-import { createStore } from 'redux';
+
 import {
-  CHANGE_RUN_TIME,
-  REMOVE_COUNTER,
-  VARIFICATION_CAN_ADD_TASK,
+  TIMER_BTN_CHANGE_VALUE,
+  VERIFICATION_CAN_ADD_TASK,
   CHANGE_ERROR_STATUS,
   VARIFICATION_INPUT,
-  TICK,
   ADD_TASK,
   FINISH_TASK,
   DELETE_TASK,
@@ -14,33 +12,28 @@ import {
   GENERETE_TASKS,
 } from './actions';
 
-const checkLocal = JSON.parse(localStorage.getItem('state'));
+const startLastTaskLocal = JSON.parse(localStorage.getItem('startLastTask'));
+const timerBtnValueLocal = localStorage.getItem('timerStatus');
+const tasksLocal = JSON.parse(localStorage.getItem('tasks'));
 
-const initialState = (
-  checkLocal !== null
-    ? checkLocal
-    : {
-      timeRunning: 'start',
-      counter: 0,
-      canAddTask: false,
-      error: false,
-      tasks: [],
-      tabValue: 0,
-      chartData: [],
-      startLastTask: 0,
-      modalIsOpen: false,
-    }
-);
+
+const initialState = {
+  timerBtnValue: (timerBtnValueLocal !== null ? timerBtnValueLocal : 'start'),
+  canAddTask: false,
+  error: false,
+  tasks: (tasksLocal !== null ? tasksLocal : []),
+  tabValue: 0,
+  chartData: [],
+  startLastTask: (startLastTaskLocal === null ? 0 : startLastTaskLocal),
+  modalIsOpen: false,
+};
 
 
 const rootReducer = (state = initialState, action) => {
-  localStorage.setItem('state', JSON.stringify(state));
   switch (action.type) {
-    case CHANGE_RUN_TIME:
-      return { ...state, timeRunning: action.payload };
-    case REMOVE_COUNTER:
-      return { ...state, counter: action.payload };
-    case VARIFICATION_CAN_ADD_TASK:
+    case TIMER_BTN_CHANGE_VALUE:
+      return { ...state, timerBtnValue: action.payload };
+    case VERIFICATION_CAN_ADD_TASK:
       return { ...state, canAddTask: action.payload };
     case CHANGE_ERROR_STATUS:
       return { ...state, error: action.payload };
@@ -50,32 +43,29 @@ const rootReducer = (state = initialState, action) => {
         error: action.error,
         canAddTask: action.canAddTask,
       };
-    case TICK:
-      return { ...state, counter: new Date().getTime() - action.start };
     case ADD_TASK:
       return {
         ...state,
         tasks: [...state.tasks, {
-          id: action.id,
-          start: action.start,
+          id: action.payload.start,
+          start: action.payload.start,
           end: 0,
           spend: 0,
-          isCompleted: action.isCompleted,
-          hour: action.hour,
+          isCompleted: action.payload.isCompleted,
+          hour: action.payload.hour,
         }],
-        startLastTask: action.start,
+        startLastTask: action.payload.start,
       };
     case FINISH_TASK:
       return {
         ...state,
-        tasks: state.tasks.filter((task, index) => {
+        tasks: state.tasks.map((task, index) => {
           if (index === state.tasks.length - 1) {
-            const newTask = task;
-            newTask.name = action.name;
-            newTask.end = action.end;
-            newTask.spend = action.spend;
-            newTask.isCompleted = action.isCompleted;
-            return newTask;
+            task.name = action.payload.name;
+            task.end = action.payload.end;
+            task.spend = action.payload.end - task.start;
+            task.isCompleted = action.payload.isCompleted;
+            return task;
           }
           return task;
         }),
@@ -100,10 +90,4 @@ const rootReducer = (state = initialState, action) => {
   }
 };
 
-export default createStore(
-  rootReducer,
-  // eslint-disable-next-line no-underscore-dangle
-  window.__REDUX_DEVTOOLS_EXTENSION__
-  // eslint-disable-next-line no-underscore-dangle
-  && window.__REDUX_DEVTOOLS_EXTENSION__(),
-);
+export default rootReducer;
