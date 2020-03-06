@@ -6,9 +6,9 @@ import {
 } from '../actions/actions';
 
 const tasksLocal = JSON.parse(localStorage.getItem('tasks'));
-const initialState = (tasksLocal !== null ? tasksLocal : []);
+const initialState = ([]);
 
-const tasksList = (state = initialState, action) => {
+const tasks = (state = initialState, action) => {
   switch (action.type) {
     case STARTED_TASK_CREATION:
       return [
@@ -40,4 +40,4 @@ const tasksList = (state = initialState, action) => {
   }
 };
 
-export default tasksList;
+export default tasks;

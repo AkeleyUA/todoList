@@ -191,6 +191,7 @@ class Timer extends React.Component {
   }
 
   infoPage = (props) => {
+    console.log('1');
     const { deleteTask, tasks } = this.props;
     let mustReturn = <ErrorIdTask paramsId={props.match.params.id} />;
     if (tasks.length > 0) {
@@ -263,13 +264,13 @@ class Timer extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  timerBtnValue: state.timerBtnValue,
-  canAddTask: state.canAddTask,
-  error: state.error,
-  tasks: state.tasks,
-  tabValue: state.tabValue,
-  modalIsOpen: state.modalIsOpen,
-  isCompleted: state.isCompleted,
+  timerBtnValue: state.wievUI.timerBtnValue,
+  error: state.wievUI.error,
+  tabValue: state.wievUI.tabValue,
+  modalIsOpen: state.wievUI.modalIsOpen,
+  isCompleted: state.wievUI.isCompleted,
+  canAddTask: state.tasksManager.canAddTask,
+  tasks: state.tasksManager.tasks,
 });
 
 const mapDispathToProps = (dispatch) => ({

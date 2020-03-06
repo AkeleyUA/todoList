@@ -53,7 +53,7 @@ const TabMainLog = (props) => {
                       type="button"
                       color="primary"
                       component={NavLink}
-                      to={`task/${task.id}`}
+                      to={`/todoList/task/${task.id}`}
                     >
                       Info
                     </Button>
