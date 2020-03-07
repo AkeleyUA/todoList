@@ -8,7 +8,7 @@ import MyModal from './modal';
 import TabMainLog from './tabMainLog';
 import TabMainCharts from './tabMainCharts';
 import HomePage from '../pages/home';
-import ErrorIdTask from '../pages/error';
+import ErrorIdTask from '../pages/inputError';
 import TaskInfo from '../pages/taskInfo';
 import {
   timerBtnChangeValue,
@@ -207,7 +207,7 @@ class Timer extends React.Component {
 
   homePage = () => {
     const {
-      error,
+      inputError,
       timerBtnValue,
       varificationInput,
       tabValue,
@@ -223,7 +223,7 @@ class Timer extends React.Component {
         />
         <HomePage
           inputErrorControler={this.inputErrorControler}
-          error={error}
+          inputError={inputError}
           timer={timer}
           varificationInput={varificationInput}
           tabValue={tabValue}
@@ -265,7 +265,7 @@ class Timer extends React.Component {
 
 const mapStateToProps = (state) => ({
   timerBtnValue: state.wievUI.timerBtnValue,
-  error: state.wievUI.error,
+  inputError: state.wievUI.inputError,
   tabValue: state.wievUI.tabValue,
   modalIsOpen: state.wievUI.modalIsOpen,
   isCompleted: state.wievUI.isCompleted,

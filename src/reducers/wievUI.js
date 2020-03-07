@@ -7,7 +7,7 @@ import {
 
 const timerBtnValueLocal = localStorage.getItem('timerStatus');
 const initialState = {
-  error: false,
+  inputError: false,
   timerBtnValue: (timerBtnValueLocal !== null ? timerBtnValueLocal : 'start'),
   modalIsOpen: false,
   tabValue: 0,
@@ -16,7 +16,7 @@ const initialState = {
 const wievUI = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_ERROR_STATUS:
-      return { ...state, error: action.payload };
+      return { ...state, inputError: action.payload };
     case MODAL_CONTROLER:
       return { ...state, modalIsOpen: action.payload };
     case TIMER_BTN_CHANGE_VALUE:

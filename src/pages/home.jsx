@@ -5,7 +5,7 @@ import { Route, NavLink } from 'react-router-dom';
 
 const HomePage = (props) => {
   const {
-    error,
+    inputError,
     tabValue,
     timerBtnValue,
     inputRef,
@@ -38,12 +38,12 @@ const HomePage = (props) => {
                 margin: "0 auto",
                 display: "flex",
               }}
-              error={error}
+              error={inputError}
               inputProps={{
                 ref: inputRef,
                 className: "input-task-name",
                 style: {
-                  color:(error ? red[500] : blue[900]),
+                  color:(inputError ? red[500] : blue[900]),
                   textAlign: 'center',
                 },
               }}
