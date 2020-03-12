@@ -3,41 +3,52 @@ import './App.css';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
-import Timer from './components/timer';
+import createSagaMiddleware from 'redux-saga';
+import Timer from './components/timerRootComponent';
 // import reducer from './reducers/index';
 import tasksManager from './reducers/tasksManager';
-import wievUI from './reducers/wievUI';
+import viewUI from './reducers/viewUI';
+import rootSaga from './sagas/rootSaga';
 
-const MyApplyMiddleware = (store) => (next) => (action) => {
-  // не работает с redux-devtools
+const MyLoggerMiddleware = (store) => (next) => (action) => {
   const result = next(action);
+  console.log(result);
   console.log('new state: ', store.getState());
-
   return result;
 };
 
-const initialReducers = {
-  tasksManager,
-  wievUI,
-};
+// const initialReducers = {
+//   tasksManager,
+//   viewUI,
+// };
 
-const myRootReducer = (state, action, reducers = initialReducers) => {
-  const newState = {};
-  const reducersFuncs = Object.values(reducers);
-  const redusersKey = Object.keys(reducers);
-  reducersFuncs.forEach((r, i) => {
-    const localState = (state === undefined ? state : state[redusersKey[i]]);
-    newState[r.name] = r(localState, action);
-  });
-  return newState;
+const sagasMiddleware = createSagaMiddleware();
+
+
+const myCombineReducers = (reducers) => {
+  const myRootReducer = (state, action) => {
+    const newState = {};
+    const redusersEntries = Object.entries(reducers);
+    redusersEntries.forEach((reducer) => {
+      const localState = (state === undefined ? state : state[reducer[0]]);
+      newState[reducer[0]] = reducer[1](localState, action);
+    });
+    return newState;
+  };
+  return myRootReducer;
 };
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
-  myRootReducer,
-  composeEnhancer(applyMiddleware(MyApplyMiddleware)),
+  myCombineReducers({
+    tasksManager,
+    viewUI,
+  }),
+  composeEnhancer(applyMiddleware(MyLoggerMiddleware, sagasMiddleware)),
 );
+
+sagasMiddleware.run(rootSaga);
 
 function App() {
   return (

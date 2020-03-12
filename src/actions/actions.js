@@ -7,12 +7,9 @@ export const FINISHED_TASK_CREATION = 'FINISHED_TASK_CREATION';
 export const DELETE_TASK = 'DELETE_TASK';
 export const TAB_CHANGE_ACTIVE = 'TAB_CHANGE_ACTIVE';
 export const MODAL_CONTROLER = 'MODAL_CONTROLER';
-export const GENERETE_TASKS = 'GENERETE_TASKS';
-
-export const timerBtnChangeValue = (newToggle) => ({
-  type: TIMER_BTN_CHANGE_VALUE,
-  payload: newToggle,
-});
+export const PUT_TASKS = 'PUT_TASKS';
+export const UPLOAD_LOCAL_STOREGE = 'UPLOAD_LOCAL_STOREGE';
+export const DOWNLOAD_LOCAL_STOREGE = 'DOWNLOAD_LOCAL_STOREGE';
 
 export const changeErrorStatus = (status) => ({
   type: CHANGE_ERROR_STATUS,
@@ -50,7 +47,15 @@ export const modalControler = (status) => ({
   payload: status,
 });
 
-export const tasksGenerator = (tasks) => ({
-  type: GENERETE_TASKS,
+export const putTasks = (tasks) => ({
+  type: PUT_TASKS,
   payload: tasks,
+});
+
+export const uploadLocalStore = () => ({
+  type: UPLOAD_LOCAL_STOREGE,
+});
+
+export const downloadLocalStore = () => ({
+  type: DOWNLOAD_LOCAL_STOREGE,
 });

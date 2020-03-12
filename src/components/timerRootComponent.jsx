@@ -3,6 +3,7 @@ import './timer.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import MyModal from './modal';
 import TabMainLog from './tabMainLog';
@@ -11,7 +12,6 @@ import HomePage from '../pages/home';
 import ErrorIdTask from '../pages/inputError';
 import TaskInfo from '../pages/taskInfo';
 import {
-  timerBtnChangeValue,
   changeErrorStatus,
   varificationInput,
   startedTaskCreation,
@@ -19,7 +19,9 @@ import {
   deleteTask,
   changeTabActive,
   modalControler,
-  tasksGenerator,
+  putTasks,
+  uploadLocalStore,
+  downloadLocalStore,
 } from '../actions/actions';
 
 class Timer extends React.Component {
@@ -33,10 +35,14 @@ class Timer extends React.Component {
   }
 
   componentDidMount() {
-    const { timerBtnValue } = this.props;
-    const start = localStorage.getItem('startLastTask');
-    if (timerBtnValue === 'stop') {
-      const interval = setInterval(() => (this.setState({ timer: new Date().getTime() - start })), 1000);
+    const { uploadLocalStore: upload, tasks } = this.props;
+    upload();
+    if (tasks.length > 0 && !tasks[tasks.length - 1].isCompleted) {
+      const interval = setInterval(() => (
+        this.setState({
+          timer: new Date().getTime() - tasks[tasks.length - 1].start,
+        })
+      ), 1000);
       this.setState({ interval });
     }
     window.addEventListener('unload', this.onUnload);
@@ -47,24 +53,22 @@ class Timer extends React.Component {
   }
 
   onUnload = () => {
-    const { tasks } = this.props;
-    localStorage.removeItem('tasks');
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    const { downloadLocalStore: download } = this.props;
+    download();
   }
 
   addInterval = () => {
-    const { timerBtnChangeValue, startedTaskCreation } = this.props;
-    const dataForTheTask = { start: new Date().getTime(), hour: new Date().getHours(), isCompleted: false };
+    const { startedTaskCreation: startCreate } = this.props;
+    const dataForTheTask = {
+      start: new Date().getTime(),
+      hour: new Date().getHours(),
+      isCompleted: false,
+    };
     const interval = setInterval(() => (
       this.setState({ timer: new Date().getTime() - dataForTheTask.start })
     ), 1000);
 
-    startedTaskCreation(dataForTheTask);
-    timerBtnChangeValue('stop');
-
-    localStorage.setItem('startLastTask', dataForTheTask.start);
-    localStorage.setItem('timerStatus', 'stop');
-
+    startCreate(dataForTheTask);
     this.setState({ interval });
   }
 
@@ -74,7 +78,6 @@ class Timer extends React.Component {
       canAddTask,
       varificationInput,
       changeErrorStatus,
-      timerBtnChangeValue,
       finishedTaskCreation,
       modalControler,
     } = this.props;
@@ -86,13 +89,9 @@ class Timer extends React.Component {
 
     if (canAddTask) {
       clearInterval(interval);
-      timerBtnChangeValue('start');
       finishedTaskCreation(dataForTheTask);
       changeErrorStatus(false);
       varificationInput(false);
-
-      localStorage.removeItem('startLastTask');
-      localStorage.removeItem('timerStatus');
 
       this.inputRef.current.value = '';
 
@@ -128,54 +127,75 @@ class Timer extends React.Component {
       changeTabActive,
       tasks,
       tabValue,
-      tasksGenerator
+      putTasks
     } = this.props;
-    const chartsArray = [];
 
     if (tabValue === 0) {
       changeTabActive(1);
     }
 
-    for (let i = 0; i < 24; i++) {
-      chartsArray.push({ hour: i, duration: 0 });
-    }
-
-    chartsArray.map((chart, index) => {
-      tasks.map((task) => {
-        const minutesLeft = 60 - new Date(task.start).getMinutes();
-        if (chart.hour === task.hour) {
-          const spendToMinuts = (task.spend / 1000 / 60);
-          if (spendToMinuts <= minutesLeft) {
-            chart.duration += Math.floor(spendToMinuts);
-          } else if (spendToMinuts > minutesLeft) {
-            chart.duration += Math.floor(minutesLeft);
-            const excessMinutes = spendToMinuts - minutesLeft;
-            if (index < 23) {
-              for (let i = 1; i < Math.floor(excessMinutes / 60) + 1; i++) {
-                const nextIndex = index + i;
-                chartsArray[(nextIndex > 23 ? nextIndex - 24 : nextIndex)].duration = 60;
-              }
-              chartsArray[
-                (index + 1 + Math.floor(excessMinutes / 60) > 23
-                  ? index + 1 + Math.floor(excessMinutes / 60) - 24
-                  : index + 1 + Math.floor(excessMinutes / 60)
-                )].duration = Math.floor(excessMinutes % 60);
-            }
-          }
+    const chartsArray = (hourInDay) => {
+      let charts = [];
+      let extraTime = 0;
+      for (let i = 0; i < hourInDay; i += 1) {
+        const findTask = tasks.filter((task) => task.hour === i);
+        const spend = findTask.map((task) => task.spend);
+        let spendSum = extraTime;
+        for (let j = 0; j < spend.length; j += 1) {
+          spendSum += Math.floor(spend[j] / 1000 / 60);
         }
-        return task;
-      });
-      return chart;
-    });
+        const minutesLeft = (findTask[0] !== undefined
+          ? 60 - new Date(findTask[0].start).getMinutes() + extraTime
+          : 60
+        );
+        const duration = (spendSum > minutesLeft
+          ? (extraTime = spendSum - minutesLeft, minutesLeft)
+          : (extraTime = 0, spendSum)
+        );
+        charts = [...charts, { hour: i, duration }];
+      }
+      return charts;
+    };
+
+    const chartsData = chartsArray(24);
+
+    // console.log(charts);
+
+    // const x = chartsData.map((chart, index) => {
+    //   tasks.map((task) => {
+    //     const minutesLeft = 60 - new Date(task.start).getMinutes();
+    //     if (chart.hour === task.hour) {
+    //       const spendToMinuts = (task.spend / 1000 / 60);
+    //       if (spendToMinuts <= minutesLeft) {
+    //         chartsData.duration += Math.floor(spendToMinuts);
+    //       } else if (spendToMinuts > minutesLeft) {
+    //         chart.duration += Math.floor(minutesLeft);
+    //         const excessMinutes = spendToMinuts - minutesLeft;
+    //         if (index < 23) {
+    //           for (let i = 1; i < Math.floor(excessMinutes / 60) + 1; i++) {
+    //             const nextIndex = index + i;
+    //             chartsData[(nextIndex > 23 ? nextIndex - 24 : nextIndex)].duration = 60;
+    //           }
+    //           chartsData[
+    //             (index + 1 + Math.floor(excessMinutes / 60) > 23
+    //               ? index + 1 + Math.floor(excessMinutes / 60) - 24
+    //               : index + 1 + Math.floor(excessMinutes / 60)
+    //             )].duration = Math.floor(excessMinutes % 60);
+    //         }
+    //       }
+    //     }
+    //     return task;
+    //   });
+    //   return chart;
+    // });
 
     return (
-      <TabMainCharts data={chartsArray} tasksGenerator={tasksGenerator} />
+      <TabMainCharts data={chartsData} putTasks={putTasks} />
     );
   }
 
   closeModal = () => {
     const { modalControler } = this.props;
-
     modalControler(false);
   }
 
@@ -191,7 +211,6 @@ class Timer extends React.Component {
   }
 
   infoPage = (props) => {
-    console.log('1');
     const { deleteTask, tasks } = this.props;
     let mustReturn = <ErrorIdTask paramsId={props.match.params.id} />;
     if (tasks.length > 0) {
@@ -208,8 +227,8 @@ class Timer extends React.Component {
   homePage = () => {
     const {
       inputError,
-      timerBtnValue,
       varificationInput,
+      tasks,
       tabValue,
       modalIsOpen,
     } = this.props;
@@ -227,8 +246,8 @@ class Timer extends React.Component {
           timer={timer}
           varificationInput={varificationInput}
           tabValue={tabValue}
-          timerBtnValue={timerBtnValue}
           inputRef={this.inputRef}
+          isCompleted={tasks.length > 0 ? tasks[tasks.length - 1].isCompleted : true}
           timeToString={this.timeToString}
           addInterval={this.addInterval}
           removeInterval={this.removeInterval}
@@ -244,12 +263,11 @@ class Timer extends React.Component {
     const minuts = Math.floor((counter / 1000 / 60) % 60);
     const seconds = Math.floor((counter / 1000) % 60);
     return (
-      `${(hours < 10 ? `0${hours}` : hours)}:
-      ${(minuts < 10 ? `0${minuts}` : minuts)}:
+      `${(hours < 10 ? `0${hours}` : hours)} :
+      ${(minuts < 10 ? `0${minuts}` : minuts)} :
       ${(seconds < 10 ? `0${seconds}` : seconds)}`
     );
   }
-
 
   render() {
     return (
@@ -262,19 +280,16 @@ class Timer extends React.Component {
   }
 }
 
-
 const mapStateToProps = (state) => ({
-  timerBtnValue: state.wievUI.timerBtnValue,
-  inputError: state.wievUI.inputError,
-  tabValue: state.wievUI.tabValue,
-  modalIsOpen: state.wievUI.modalIsOpen,
-  isCompleted: state.wievUI.isCompleted,
+  inputError: state.viewUI.inputError,
+  tabValue: state.viewUI.tabValue,
+  modalIsOpen: state.viewUI.modalIsOpen,
+  isCompleted: state.viewUI.isCompleted,
   canAddTask: state.tasksManager.canAddTask,
   tasks: state.tasksManager.tasks,
 });
 
 const mapDispathToProps = (dispatch) => ({
-  timerBtnChangeValue: bindActionCreators(timerBtnChangeValue, dispatch),
   changeErrorStatus: bindActionCreators(changeErrorStatus, dispatch),
   varificationInput: bindActionCreators(varificationInput, dispatch),
   startedTaskCreation: bindActionCreators(startedTaskCreation, dispatch),
@@ -282,8 +297,32 @@ const mapDispathToProps = (dispatch) => ({
   deleteTask: bindActionCreators(deleteTask, dispatch),
   changeTabActive: bindActionCreators(changeTabActive, dispatch),
   modalControler: bindActionCreators(modalControler, dispatch),
-  tasksGenerator: bindActionCreators(tasksGenerator, dispatch),
+  putTasks: bindActionCreators(putTasks, dispatch),
+  uploadLocalStore: bindActionCreators(uploadLocalStore, dispatch),
+  downloadLocalStore: bindActionCreators(downloadLocalStore, dispatch),
 });
 
+Timer.propTypes = {
+  inputError: PropTypes.bool.isRequired,
+  tabValue: PropTypes.number.isRequired,
+  modalIsOpen: PropTypes.bool.isRequired,
+  isCompleted: PropTypes.bool,
+  canAddTask: PropTypes.bool.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  changeTabActive: PropTypes.func.isRequired,
+  deleteTask: PropTypes.func.isRequired,
+  varificationInput: PropTypes.func.isRequired,
+  changeErrorStatus: PropTypes.func.isRequired,
+  finishedTaskCreation: PropTypes.func.isRequired,
+  modalControler: PropTypes.func.isRequired,
+  putTasks: PropTypes.func.isRequired,
+  startedTaskCreation: PropTypes.func.isRequired,
+  uploadLocalStore: PropTypes.func.isRequired,
+  downloadLocalStore: PropTypes.func.isRequired,
+};
+
+Timer.defaultProps = {
+  isCompleted: false,
+};
 
 export default connect(mapStateToProps, mapDispathToProps)(Timer);

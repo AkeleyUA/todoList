@@ -11,26 +11,29 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const random = (min, max) => Math.round(Math.random() * (max - min) + min);
-let newTasksArray = [];
-let randomStart = new Date().getTime() - 43200000;
-for (let i = 0; i < random(10, 15); i++) {
-  const randomSpend = random(600000, 5400000);
-  const randomEnd = randomStart + randomSpend;
-  newTasksArray = [...newTasksArray, {
-    id: randomStart,
-    start: randomStart,
-    end: randomEnd,
-    spend: randomSpend,
-    isCompleted: true,
-    hour: new Date(randomStart).getHours(),
-    name: `random task №${i + 1}`,
-  }];
-  randomStart = randomEnd + random(0, 600000);
-}
+const randomTasks = () => {
+  const random = (min, max) => Math.round(Math.random() * (max - min) + min);
+  let newTasksArray = [];
+  let randomStart = new Date().getTime() - 43200000;
+  for (let i = 0; i < random(10, 15); i++) {
+    const randomSpend = random(600000, 5400000);
+    const randomEnd = randomStart + randomSpend;
+    newTasksArray = [...newTasksArray, {
+      id: randomStart,
+      start: randomStart,
+      end: randomEnd,
+      spend: randomSpend,
+      isCompleted: true,
+      hour: new Date(randomStart).getHours(),
+      name: `random task №${i + 1}`,
+    }];
+    randomStart = randomEnd + random(0, 600000);
+  }
+  return newTasksArray;
+};
 
 const tabMainCharts = (props) => {
-  const { data, tasksGenerator } = props;
+  const { data, putTasks } = props;
   return (
     <>
       <ResponsiveContainer height={430}>
@@ -50,7 +53,20 @@ const tabMainCharts = (props) => {
           <Bar name="Minuts in this hours" dataKey="duration" fill={blue[900]} width={30} />
         </BarChart>
       </ResponsiveContainer>
-      <Button style={{ position: 'fixed', bottom: 50, right: 50 }} variant="contained" onClick={() => tasksGenerator(newTasksArray)}>generate</Button>
+      <Button
+        style={{
+          position: 'fixed',
+          bottom: 50,
+          right: 50,
+        }}
+        variant="contained"
+        onClick={() => {
+          let tasksArray = randomTasks();
+          putTasks(tasksArray);
+        }}
+      >
+        generate
+      </Button>
     </>
   );
 };

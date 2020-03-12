@@ -2,13 +2,12 @@ import {
   STARTED_TASK_CREATION,
   FINISHED_TASK_CREATION,
   DELETE_TASK,
-  GENERETE_TASKS,
+  PUT_TASKS,
   VERIFICATION_INPUT,
 } from '../actions/actions';
 
-const tasksLocal = JSON.parse(localStorage.getItem('tasks'));
 const initialState = {
-  tasks: (tasksLocal !== null ? tasksLocal : []),
+  tasks: [],
   canAddTask: false,
 };
 
@@ -47,7 +46,7 @@ const tasksManager = (state = initialState, action) => {
         ...state,
         tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
-    case GENERETE_TASKS:
+    case PUT_TASKS:
       return {
         ...state,
         tasks: action.payload,
