@@ -4,7 +4,7 @@ import {
   DELETE_TASK,
   PUT_TASKS,
   VERIFICATION_INPUT,
-} from '../actions/actions';
+} from './actions';
 
 const initialState = {
   tasks: [],

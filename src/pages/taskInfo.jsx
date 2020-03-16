@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { grey, blue } from '@material-ui/core/colors';
 import { NavLink } from 'react-router-dom';
 import {
@@ -10,8 +13,11 @@ import {
   TableCell,
 } from '@material-ui/core';
 
-const TaskInfo = (props) => {
-  const { deleteTask, task, timeToString } = props;
+import timeToString from '../components/timer/timeToStringHelper';
+import { deleteTaskAction } from '../reducers/tasksManager/actions';
+
+const TaskInfo = ({ deleteTask, tasks, match }) => {
+  const task = tasks.find((t) => t.id === +match.params.id);
   return (
     <>
       <Table
@@ -88,4 +94,18 @@ const TaskInfo = (props) => {
   );
 };
 
-export default TaskInfo;
+TaskInfo.propTypes = {
+  deleteTask: PropTypes.func.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  match: PropTypes.objectOf(PropTypes.any).isRequired,
+};
+
+const mapDispathToProps = (dispatch) => ({
+  deleteTask: bindActionCreators(deleteTaskAction, dispatch),
+});
+
+const mapStateToProps = (state) => ({
+  tasks: state.tasksManager.tasks,
+});
+
+export default connect(mapStateToProps, mapDispathToProps)(TaskInfo);

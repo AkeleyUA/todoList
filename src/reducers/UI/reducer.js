@@ -2,16 +2,15 @@ import {
   CHANGE_ERROR_STATUS,
   MODAL_CONTROLER,
   TAB_CHANGE_ACTIVE,
-} from '../actions/actions';
+} from './action';
 
 const initialState = {
   inputError: false,
   modalIsOpen: false,
   tabValue: 0,
-  interval: 0,
 };
 
-const viewUI = (state = initialState, action) => {
+const UI = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_ERROR_STATUS:
       return { ...state, inputError: action.payload };
@@ -23,4 +22,4 @@ const viewUI = (state = initialState, action) => {
   }
 };
 
-export default viewUI;
+export default UI;

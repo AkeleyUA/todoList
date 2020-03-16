@@ -4,14 +4,11 @@ import { Button } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 import { grey } from '@material-ui/core/colors';
 
-const ErrorIdTask = (props) => {
-  const { paramsId } = props;
+const ErrorIdTask = ({ match }) => {
   return (
     <>
       <Alert severity="error" style={{ margin: 30 }}>
-        A task with id:
-        {paramsId}
-        does not exist.
+        A task with id: {match.params.id} does not exist.
       </Alert>
       <div style={{
         maxWidth: 1440,

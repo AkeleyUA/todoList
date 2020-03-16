@@ -1,9 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Modal, Button } from '@material-ui/core';
 import { cyan, grey, red } from '@material-ui/core/colors';
 
-const MyModal = (props) => {
-  const { closeModal, modalIsOpen } = props;
+import { modalControlerAction } from '../reducers/UI/action';
+
+const MyModal = ({ modalControler, modalIsOpen }) => {
+  const closeModal = () => {
+    modalControler(false);
+  };
+
   return (
     <Modal
       aria-labelledby="simple-modal-title"
@@ -42,4 +50,17 @@ const MyModal = (props) => {
   );
 };
 
-export default MyModal;
+MyModal.propTypes = {
+  modalControler: PropTypes.func.isRequired,
+  modalIsOpen: PropTypes.bool.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  modalIsOpen: state.UI.modalIsOpen,
+});
+
+const mapDispathToProps = (dispatch) => ({
+  modalControler: bindActionCreators(modalControlerAction, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispathToProps)(MyModal);
