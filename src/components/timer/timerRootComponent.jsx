@@ -257,5 +257,4 @@ Timer.propTypes = {
   children: PropTypes.arrayOf(PropTypes.any).isRequired,
 };
 
-
 export default connect(mapStateToProps, mapDispathToProps)(Timer);

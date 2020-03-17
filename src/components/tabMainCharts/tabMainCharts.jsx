@@ -71,7 +71,7 @@ tabMainCharts.propTypes = {
   putTasks: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   changeTabActive: PropTypes.func.isRequired,
-  tabValue: PropTypes.bool.isRequired,
+  tabValue: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({

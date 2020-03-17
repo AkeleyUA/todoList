@@ -17,15 +17,31 @@ import timeToString from '../components/timer/timeToStringHelper';
 import { deleteTaskAction } from '../reducers/tasksManager/actions';
 
 const TaskInfo = ({ deleteTask, tasks, match }) => {
-  const task = tasks.find((t) => t.id === +match.params.id);
+  const neededTask = tasks.find((task) => task.id === +match.params.id);
+  const style = {
+    buttonDelete: { background: grey[50], borderRadius: 0 },
+    table: {
+      maxWidth: 1440,
+      margin: '0 auto',
+    },
+    tableRow: { background: blue[100] },
+    tableBody: { color: blue[900] },
+    div: {
+      width: '100%',
+      textAlign: 'center',
+      padding: '30px 0',
+    },
+    buttonHome: {
+      background: grey[50],
+      boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
+    },
+  };
+
   return (
     <>
       <Table
         className="tasks-log"
-        style={{
-          maxWidth: 1440,
-          margin: '0 auto',
-        }}
+        style={style.table}
       >
         <TableHead>
           <TableRow>
@@ -37,28 +53,28 @@ const TaskInfo = ({ deleteTask, tasks, match }) => {
             <TableCell variant="body">Delete</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody style={{ color: blue[900] }}>
-          <TableRow id={task.id} style={{ background: blue[100] }}>
-            <TableCell variant="head"><div>{task.id}</div></TableCell>
-            <TableCell variant="head"><div>{task.name}</div></TableCell>
+        <TableBody style={style.tableBody}>
+          <TableRow id={neededTask.id} style={style.tableRow}>
+            <TableCell variant="head"><div>{neededTask.id}</div></TableCell>
+            <TableCell variant="head"><div>{neededTask.name}</div></TableCell>
             <TableCell variant="head">
               <div>
-                {new Date(task.start).toLocaleTimeString()}
+                {new Date(neededTask.start).toLocaleTimeString()}
               </div>
             </TableCell>
             <TableCell variant="head">
               <div>
-                {new Date(task.end).toLocaleTimeString()}
+                {new Date(neededTask.end).toLocaleTimeString()}
               </div>
             </TableCell>
-            <TableCell variant="head"><div>{timeToString(task.spend)}</div></TableCell>
+            <TableCell variant="head"><div>{timeToString(neededTask.spend)}</div></TableCell>
             <TableCell variant="head">
               <Button
-                style={{ background: grey[50], borderRadius: 0 }}
+                style={style.buttonDelete}
                 type="button"
                 component={NavLink}
                 onClick={() => {
-                  deleteTask(task.id);
+                  deleteTask(neededTask.id);
                 }}
                 to="/todoList/"
                 color="primary"
@@ -70,22 +86,15 @@ const TaskInfo = ({ deleteTask, tasks, match }) => {
         </TableBody>
       </Table>
       <div
-        style={{
-          width: '100%',
-          textAlign: 'center',
-          padding: '30px 0',
-        }}
+        style={style.div}
       >
         <Button
-          style={{
-            background: grey[50],
-            boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
-          }}
+          style={style.buttonHome}
           size="large"
           type="button"
           color="primary"
           component={NavLink}
-          to="/todoList/"
+          to="/todoList"
         >
           Home
         </Button>
