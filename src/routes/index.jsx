@@ -1,38 +1,25 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import Timer from '../components/timer/timerRootComponent';
-import TabMainLog from '../components/tabMainLog';
-import TabMainCharts from '../components/tabMainCharts/tabMainCharts';
 import TaskInfoPage from '../pages/index';
-
-const NestedRouteInTimer = () => {
-  const routes = [{
-    path: '/todoList',
-    component: TabMainLog,
-  }, {
-    path: '/todoList/tasks-chart',
-    component: TabMainCharts,
-  }];
-  const routeComponents = routes.map(({ path, component }, key) => (
-    <Route exact path={path} component={component} key={key} />
-  ));
-  return (
-    <Timer>
-      {routeComponents}
-    </Timer>
-  );
-};
+import LogPage from '../pages/log';
+import ChartPage from '../pages/charts';
 
 const routes = [{
-  path: '/todoList',
-  component: NestedRouteInTimer,
+  name: 'log',
+  path: '/log',
+  component: LogPage,
 }, {
-  path: '/task/:id',
+  name: 'info',
+  path: '/tasks/:id',
   component: TaskInfoPage,
+}, {
+  name: 'chart',
+  path: '/chart',
+  component: ChartPage,
 }];
 
-const routeComponents = routes.map(({ path, component }, key) => (
-  <Route path={path} component={component} key={key} />
+const routeComponents = routes.map(({ path, component, name }) => (
+  <Route path={path} component={component} key={name} />
 ));
 
 export default routeComponents;

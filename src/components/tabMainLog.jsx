@@ -14,20 +14,13 @@ import {
 } from '@material-ui/core';
 
 import { deleteTaskAction } from '../reducers/tasksManager/actions';
-import { changeTabActiveAction } from '../reducers/UI/action';
-
 import timeToString from './timer/timeToStringHelper';
 
 const TabMainLog = ({
   tasks,
   deleteTask,
-  changeTabActive,
-  tabValue,
 }) => {
   const shouldRenderTasks = tasks.filter((task) => task.isCompleted);
-  if (tabValue !== 0) {
-    changeTabActive(0);
-  }
   return (
     <div
       className="tabs-main"
@@ -73,7 +66,7 @@ const TabMainLog = ({
                   type="button"
                   color="primary"
                   component={NavLink}
-                  to={`/task/${task.id}`}
+                  to={`/tasks/${task.id}`}
                 >
                   Info
                 </Button>
@@ -101,18 +94,14 @@ const TabMainLog = ({
 TabMainLog.propTypes = {
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteTask: PropTypes.func.isRequired,
-  changeTabActive: PropTypes.func.isRequired,
-  tabValue: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   tasks: state.tasksManager.tasks,
-  tabValue: state.UI.tabValue,
 });
 
 const mapDispathToProps = (dispatch) => ({
   deleteTask: bindActionCreators(deleteTaskAction, dispatch),
-  changeTabActive: bindActionCreators(changeTabActiveAction, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispathToProps)(TabMainLog);

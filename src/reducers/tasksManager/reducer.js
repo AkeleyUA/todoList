@@ -3,11 +3,10 @@ import {
   FINISHED_TASK_CREATION,
   DELETE_TASK,
   PUT_TASKS,
-  VERIFICATION_INPUT,
 } from './actions';
 
 const initialState = {
-  tasks: [],
+  tasks: localStorage.getItem('tasks') !== null ? JSON.parse(localStorage.getItem('tasks')) : [],
   canAddTask: false,
 };
 
@@ -50,11 +49,6 @@ const tasksManager = (state = initialState, action) => {
       return {
         ...state,
         tasks: action.payload,
-      };
-    case VERIFICATION_INPUT:
-      return {
-        ...state,
-        canAddTask: action.payload,
       };
     default: return state;
   }

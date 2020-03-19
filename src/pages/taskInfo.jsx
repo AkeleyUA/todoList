@@ -76,7 +76,7 @@ const TaskInfo = ({ deleteTask, tasks, match }) => {
                 onClick={() => {
                   deleteTask(neededTask.id);
                 }}
-                to="/todoList/"
+                to="/log"
                 color="primary"
               >
                 Delete
@@ -94,7 +94,7 @@ const TaskInfo = ({ deleteTask, tasks, match }) => {
           type="button"
           color="primary"
           component={NavLink}
-          to="/todoList"
+          to="/log"
         >
           Home
         </Button>

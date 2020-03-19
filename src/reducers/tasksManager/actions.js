@@ -4,7 +4,6 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const PUT_TASKS = 'PUT_TASKS';
 export const UPLOAD_LOCAL_STOREGE = 'UPLOAD_LOCAL_STOREGE';
 export const DOWNLOAD_LOCAL_STOREGE = 'DOWNLOAD_LOCAL_STOREGE';
-export const VERIFICATION_INPUT = 'VERIFICATION_INPUT';
 
 export const startedTaskCreationAction = (task) => ({
   type: STARTED_TASK_CREATION,
@@ -32,9 +31,4 @@ export const uploadLocalStoreAction = () => ({
 
 export const downloadLocalStoreAction = () => ({
   type: DOWNLOAD_LOCAL_STOREGE,
-});
-
-export const verificationInputAction = (status) => ({
-  type: VERIFICATION_INPUT,
-  payload: status,
 });
