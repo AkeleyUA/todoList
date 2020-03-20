@@ -2,7 +2,7 @@
   "name": "homework4",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://akeleyua.github.io/todoList/",
+  "homepage": "https://akeleyua.github.io/",
   "dependencies": {
     "@material-ui/core": "^4.9.4",
     "@material-ui/lab": "^4.0.0-alpha.44",
