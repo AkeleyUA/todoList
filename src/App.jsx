@@ -9,7 +9,7 @@ import routeComponents from './routes/index';
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename="/todoList/">
         <Switch>
           {routeComponents}
           <Redirect exact from="/" to="/log" />
