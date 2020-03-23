@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import {
   Button,
   Grid,
@@ -14,20 +13,36 @@ import {
   Container,
   Box,
 } from '@material-ui/core';
-
 import * as palette from '@material-ui/core/colors';
 import MyModal from '../modal';
 import timeToString from './timeToStringHelper';
-
 import {
   startedTaskCreationAction,
   finishedTaskCreationAction,
   downloadLocalStoreAction,
 } from '../../reducers/tasksManager/actions';
-
 import {
   modalControlerAction,
 } from '../../reducers/UI/action';
+
+const style = {
+  grid: {
+    maxWidth: 1440,
+    margin: '0 auto',
+  },
+  input: {
+    width: '300px',
+    margin: '0 auto',
+    display: 'flex',
+  },
+  button: {
+    margin: '0 auto 30px auto',
+    display: 'flex',
+    boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
+  },
+  tabs: { width: '100%', background: palette.cyan[700] },
+  tab: { color: palette.grey[50] },
+};
 
 class Timer extends React.Component {
   constructor(props) {
@@ -74,9 +89,9 @@ class Timer extends React.Component {
 
   componentWillUnmount() {
     const { downloadLocalStore } = this.props;
-    downloadLocalStore(); // размонтирован
+    downloadLocalStore();
     clearInterval(this.interval);
-    window.removeEventListener('beforeunload', downloadLocalStore); // открыт по ссылке
+    window.removeEventListener('beforeunload', downloadLocalStore);
   }
 
   startHandler = () => {
@@ -91,7 +106,6 @@ class Timer extends React.Component {
     ), 1000);
     startedTaskCreation(dataForTheTask);
   }
-  // названия доавить интервал и создание таски, что-то сделать с этим
 
   stopHandler = () => {
     const {
@@ -118,16 +132,6 @@ class Timer extends React.Component {
     }
   }
 
-  // inputErrorControler = (event) => {
-  //   const taskNameLength = event.target.value.length;
-  //   if (taskNameLength > 0) {
-  //     this.inputError = false;
-  //   } else {
-  //     this.inputError = true;
-  //   }
-  //   console.log(this.inputError);
-  // }
-
   render() {
     const {
       tasks,
@@ -136,24 +140,6 @@ class Timer extends React.Component {
     } = this.props;
     const isCompleted = (tasks.length > 0 ? tasks[tasks.length - 1].isCompleted : true);
     const { timer } = this.state;
-    const style = {
-      grid: {
-        maxWidth: 1440,
-        margin: '0 auto',
-      },
-      input: {
-        width: '300px',
-        margin: '0 auto',
-        display: 'flex',
-      },
-      button: {
-        margin: '0 auto 30px auto',
-        display: 'flex',
-        boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
-      },
-      tabs: { width: '100%', background: palette.cyan[700] },
-      tab: { color: palette.grey[50] },
-    };
 
     return (
       <div style={{ height: 1000 }}>

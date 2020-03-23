@@ -16,6 +16,20 @@ import {
 import { deleteTaskAction } from '../reducers/tasksManager/actions';
 import timeToString from './timer/timeToStringHelper';
 
+const style = {
+  div: {
+    maxWidth: 1440,
+    margin: '0 auto',
+  },
+  tbody: { color: blue[900] },
+  trow: { background: blue[100] },
+  buttonInfo: {
+    background: grey[50],
+    borderRadius: 0,
+  },
+  buttonDelete: { background: grey[50], borderRadius: 0 },
+};
+
 const TabMainLog = ({
   tasks,
   deleteTask,
@@ -24,10 +38,7 @@ const TabMainLog = ({
   return (
     <div
       className="tabs-main"
-      style={{
-        maxWidth: 1440,
-        margin: '0 auto',
-      }}
+      style={style.div}
     >
       <Table className="tasks-log">
         <TableHead>
@@ -41,9 +52,9 @@ const TabMainLog = ({
             <TableCell variant="body">Delete</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody style={{ color: blue[900] }}>
+        <TableBody style={style.tbody}>
           {shouldRenderTasks.map((task, index) => (
-            <TableRow id={task.id} key={task.id} style={{ background: blue[100] }}>
+            <TableRow id={task.id} key={task.id} style={style.trow}>
               <TableCell variant="head"><div>{index + 1}</div></TableCell>
               <TableCell variant="head"><div>{task.name}</div></TableCell>
               <TableCell variant="head">
@@ -59,10 +70,7 @@ const TabMainLog = ({
               <TableCell variant="head"><div>{timeToString(task.spend)}</div></TableCell>
               <TableCell variant="head">
                 <Button
-                  style={{
-                    background: grey[50],
-                    borderRadius: 0,
-                  }}
+                  style={style.buttonInfo}
                   type="button"
                   color="primary"
                   component={NavLink}
@@ -73,7 +81,7 @@ const TabMainLog = ({
               </TableCell>
               <TableCell variant="head">
                 <Button
-                  style={{ background: grey[50], borderRadius: 0 }}
+                  style={style.buttonDelete}
                   type="button"
                   onClick={() => {
                     deleteTask(task.id);

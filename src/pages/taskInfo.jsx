@@ -16,27 +16,27 @@ import {
 import timeToString from '../components/timer/timeToStringHelper';
 import { deleteTaskAction } from '../reducers/tasksManager/actions';
 
+const style = {
+  buttonDelete: { background: grey[50], borderRadius: 0 },
+  table: {
+    maxWidth: 1440,
+    margin: '0 auto',
+  },
+  tableRow: { background: blue[100] },
+  tableBody: { color: blue[900] },
+  div: {
+    width: '100%',
+    textAlign: 'center',
+    padding: '30px 0',
+  },
+  buttonHome: {
+    background: grey[50],
+    boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
+  },
+};
+
 const TaskInfo = ({ deleteTask, tasks, match }) => {
   const neededTask = tasks.find((task) => task.id === +match.params.id);
-  const style = {
-    buttonDelete: { background: grey[50], borderRadius: 0 },
-    table: {
-      maxWidth: 1440,
-      margin: '0 auto',
-    },
-    tableRow: { background: blue[100] },
-    tableBody: { color: blue[900] },
-    div: {
-      width: '100%',
-      textAlign: 'center',
-      padding: '30px 0',
-    },
-    buttonHome: {
-      background: grey[50],
-      boxShadow: '0 0 3px rgba(0, 0, 0, 0.3)',
-    },
-  };
-
   return (
     <>
       <Table
