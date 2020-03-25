@@ -1,5 +1,5 @@
 import {
-  MODAL_CONTROLER,
+  MODAL_CONTROLER, INPUT_ERROR,
 } from './action';
 
 const initialState = {
@@ -13,6 +13,8 @@ const UI = (state = initialState, action) => {
     case MODAL_CONTROLER:
       return { ...state, modalIsOpen: action.payload };
     default: return state;
+    case INPUT_ERROR:
+      return { ...state, inputError: action.payload };
   }
 };
 

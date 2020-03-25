@@ -2,8 +2,8 @@ export const STARTED_TASK_CREATION = 'STARTED_TASK_CREATION';
 export const FINISHED_TASK_CREATION = 'FINISHED_TASK_CREATION';
 export const DELETE_TASK = 'DELETE_TASK';
 export const PUT_TASKS = 'PUT_TASKS';
-export const UPLOAD_LOCAL_STOREGE = 'UPLOAD_LOCAL_STOREGE';
-export const DOWNLOAD_LOCAL_STOREGE = 'DOWNLOAD_LOCAL_STOREGE';
+export const PUT_TO_LOCAL_STORAGE = 'PUT_TO_LOCAL_STORAGE';
+export const BEFORE_UNLOAD = 'BEFORE_UNLOAD';
 
 export const startedTaskCreationAction = (task) => ({
   type: STARTED_TASK_CREATION,
@@ -25,10 +25,6 @@ export const putTasksAction = (tasks) => ({
   payload: tasks,
 });
 
-export const uploadLocalStoreAction = () => ({
-  type: UPLOAD_LOCAL_STOREGE,
-});
-
-export const downloadLocalStoreAction = () => ({
-  type: DOWNLOAD_LOCAL_STOREGE,
+export const putToLocalStoreAction = () => ({
+  type: PUT_TO_LOCAL_STORAGE,
 });

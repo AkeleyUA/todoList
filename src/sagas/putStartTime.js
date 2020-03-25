@@ -14,16 +14,16 @@ function* removeStartTimeWorker() {
   yield call(removeStartTime);
 }
 
-function* uploadStartTimeWorker() {
+function* setStartTimeWorker() {
   const start = yield select((state) => (
     state.tasksManager.tasks[state.tasksManager.tasks.length - 1].start
   ));
   localStorage.setItem('startLastTask', start);
 }
 
-function* uploadDataWatcher() {
-  yield takeEvery(STARTED_TASK_CREATION, uploadStartTimeWorker);
+function* putStartTimeWatcher() {
+  yield takeEvery(STARTED_TASK_CREATION, setStartTimeWorker);
   yield takeEvery(FINISHED_TASK_CREATION, removeStartTimeWorker);
 }
 
-export default uploadDataWatcher;
+export default putStartTimeWatcher;

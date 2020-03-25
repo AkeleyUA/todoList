@@ -1,5 +1,5 @@
 import React from 'react';
-import Timer from '../components/timer/timerRootComponent';
+import Timer from '../components/timer/timer';
 import TabMainCharts from '../components/tabMainCharts/tabMainCharts';
 
 const ChartPage = () => (

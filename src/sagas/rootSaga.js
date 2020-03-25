@@ -1,11 +1,11 @@
 import { all } from 'redux-saga/effects';
 
-import uploadDataWatcher from './uploadLocalStore';
-import downloadDataWatcher from './downloadLocalStore';
+import putStartTimeWatcher from './putStartTime';
+import putTasksWatcher from './putTasks';
 
 export default function* rootSaga() {
   yield all([
-    downloadDataWatcher(),
-    uploadDataWatcher(),
+    putStartTimeWatcher(),
+    putTasksWatcher(),
   ]);
 }

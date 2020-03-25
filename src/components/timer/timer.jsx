@@ -19,10 +19,11 @@ import timeToString from './timeToStringHelper';
 import {
   startedTaskCreationAction,
   finishedTaskCreationAction,
-  downloadLocalStoreAction,
+  putToLocalStoreAction,
 } from '../../reducers/tasksManager/actions';
 import {
   modalControlerAction,
+  inputErrorControlerAction,
 } from '../../reducers/UI/action';
 
 const style = {
@@ -56,13 +57,11 @@ class Timer extends React.Component {
       ),
     };
     this.inputRef = React.createRef();
-    this.tabValue = 0;
-    this.inputError = false;
     this.interval = null;
   }
 
   componentDidMount() {
-    const { downloadLocalStore, tasks } = this.props;
+    const { tasks, putToLocalStore } = this.props;
     const { timer } = this.state;
     const resetTimer = (n) => {
       if (n !== 0) {
@@ -84,14 +83,13 @@ class Timer extends React.Component {
       clearInterval(this.interval);
       resetTimer(timer);
     }
-    window.addEventListener('beforeunload', downloadLocalStore);
+    putToLocalStore();
   }
 
   componentWillUnmount() {
-    const { downloadLocalStore } = this.props;
-    downloadLocalStore();
+    const { putToLocalStore } = this.props;
+    putToLocalStore();
     clearInterval(this.interval);
-    window.removeEventListener('beforeunload', downloadLocalStore);
   }
 
   startHandler = () => {
@@ -111,6 +109,7 @@ class Timer extends React.Component {
     const {
       finishedTaskCreation,
       modalControler,
+      inputErrorControler,
     } = this.props;
     const inputValue = this.inputRef.current.value;
     const dataForTheTask = {
@@ -124,11 +123,11 @@ class Timer extends React.Component {
       finishedTaskCreation(dataForTheTask);
       this.inputRef.current.value = '';
       this.setState({ timer: 0 });
-      this.inputError = false;
+      inputErrorControler(false);
     } else {
       modalControler(true);
       this.inputRef.current.focus();
-      this.inputError = true;
+      inputErrorControler(true);
     }
   }
 
@@ -137,10 +136,10 @@ class Timer extends React.Component {
       tasks,
       children,
       tabValue,
+      inputError,
     } = this.props;
     const isCompleted = (tasks.length > 0 ? tasks[tasks.length - 1].isCompleted : true);
     const { timer } = this.state;
-
     return (
       <div style={{ height: 1000 }}>
         <MyModal />
@@ -155,12 +154,12 @@ class Timer extends React.Component {
             <Input
               id="standard-basic"
               style={style.input}
-              error={this.inputError}
+              error={inputError}
               inputProps={{
                 ref: this.inputRef,
                 className: 'input-task-name',
                 style: {
-                  color: (this.inputError ? palette.red[500] : palette.blue[900]),
+                  color: (inputError ? palette.red[500] : palette.blue[900]),
                   textAlign: 'center',
                 },
               }}
@@ -211,7 +210,8 @@ const mapDispathToProps = (dispatch) => ({
   startedTaskCreation: bindActionCreators(startedTaskCreationAction, dispatch),
   finishedTaskCreation: bindActionCreators(finishedTaskCreationAction, dispatch),
   modalControler: bindActionCreators(modalControlerAction, dispatch),
-  downloadLocalStore: bindActionCreators(downloadLocalStoreAction, dispatch),
+  putToLocalStore: bindActionCreators(putToLocalStoreAction, dispatch),
+  inputErrorControler: bindActionCreators(inputErrorControlerAction, dispatch),
 });
 
 Timer.propTypes = {
@@ -219,8 +219,11 @@ Timer.propTypes = {
   finishedTaskCreation: PropTypes.func.isRequired,
   modalControler: PropTypes.func.isRequired,
   startedTaskCreation: PropTypes.func.isRequired,
-  downloadLocalStore: PropTypes.func.isRequired,
+  putToLocalStore: PropTypes.func.isRequired,
   tabValue: PropTypes.number.isRequired,
+  inputError: PropTypes.bool.isRequired,
+  inputErrorControler: PropTypes.func.isRequired,
+  children: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispathToProps)(Timer);
