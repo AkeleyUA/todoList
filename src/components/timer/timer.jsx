@@ -20,6 +20,7 @@ import {
   startedTaskCreationAction,
   finishedTaskCreationAction,
   putToLocalStoreAction,
+  loadPageAction,
 } from '../../reducers/tasksManager/actions';
 import {
   modalControlerAction,
@@ -61,7 +62,7 @@ class Timer extends React.Component {
   }
 
   componentDidMount() {
-    const { tasks, putToLocalStore } = this.props;
+    const { tasks, loadPage } = this.props;
     const { timer } = this.state;
     const resetTimer = (n) => {
       if (n !== 0) {
@@ -83,7 +84,7 @@ class Timer extends React.Component {
       clearInterval(this.interval);
       resetTimer(timer);
     }
-    putToLocalStore();
+    loadPage();
   }
 
   componentWillUnmount() {
@@ -212,6 +213,7 @@ const mapDispathToProps = (dispatch) => ({
   modalControler: bindActionCreators(modalControlerAction, dispatch),
   putToLocalStore: bindActionCreators(putToLocalStoreAction, dispatch),
   inputErrorControler: bindActionCreators(inputErrorControlerAction, dispatch),
+  loadPage: bindActionCreators(loadPageAction, dispatch),
 });
 
 Timer.propTypes = {

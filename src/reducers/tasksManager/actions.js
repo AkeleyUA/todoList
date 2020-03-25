@@ -4,6 +4,7 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const PUT_TASKS = 'PUT_TASKS';
 export const PUT_TO_LOCAL_STORAGE = 'PUT_TO_LOCAL_STORAGE';
 export const BEFORE_UNLOAD = 'BEFORE_UNLOAD';
+export const LOAD_PAGE = 'LOAD_PAGE';
 
 export const startedTaskCreationAction = (task) => ({
   type: STARTED_TASK_CREATION,
@@ -27,4 +28,8 @@ export const putTasksAction = (tasks) => ({
 
 export const putToLocalStoreAction = () => ({
   type: PUT_TO_LOCAL_STORAGE,
+});
+
+export const loadPageAction = () => ({
+  type: LOAD_PAGE,
 });
