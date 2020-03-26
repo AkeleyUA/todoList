@@ -19,7 +19,6 @@ import timeToString from './timeToStringHelper';
 import {
   startedTaskCreationAction,
   finishedTaskCreationAction,
-  putToLocalStoreAction,
   loadPageAction,
 } from '../../reducers/tasksManager/actions';
 import {
@@ -88,8 +87,6 @@ class Timer extends React.Component {
   }
 
   componentWillUnmount() {
-    const { putToLocalStore } = this.props;
-    putToLocalStore();
     clearInterval(this.interval);
   }
 
@@ -211,7 +208,6 @@ const mapDispathToProps = (dispatch) => ({
   startedTaskCreation: bindActionCreators(startedTaskCreationAction, dispatch),
   finishedTaskCreation: bindActionCreators(finishedTaskCreationAction, dispatch),
   modalControler: bindActionCreators(modalControlerAction, dispatch),
-  putToLocalStore: bindActionCreators(putToLocalStoreAction, dispatch),
   inputErrorControler: bindActionCreators(inputErrorControlerAction, dispatch),
   loadPage: bindActionCreators(loadPageAction, dispatch),
 });
@@ -221,7 +217,6 @@ Timer.propTypes = {
   finishedTaskCreation: PropTypes.func.isRequired,
   modalControler: PropTypes.func.isRequired,
   startedTaskCreation: PropTypes.func.isRequired,
-  putToLocalStore: PropTypes.func.isRequired,
   tabValue: PropTypes.number.isRequired,
   inputError: PropTypes.bool.isRequired,
   inputErrorControler: PropTypes.func.isRequired,

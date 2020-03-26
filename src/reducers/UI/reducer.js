@@ -5,7 +5,6 @@ import {
 const initialState = {
   inputError: false,
   modalIsOpen: false,
-  tabValue: 0,
 };
 
 const UI = (state = initialState, action) => {

@@ -6,7 +6,6 @@ import {
 } from 'redux-saga/effects';
 import { eventChannel, END } from 'redux-saga';
 import {
-  PUT_TO_LOCAL_STORAGE,
   LOAD_PAGE,
 } from '../reducers/tasksManager/actions';
 
@@ -28,18 +27,14 @@ function* catchUnloadChannel() {
         };
       })
     ));
-
-    while (true) {
-      yield take(listenerUnload);
-      yield call(putTasksWorker);
-    }
+    yield take(listenerUnload);
+    yield call(putTasksWorker);
   } catch {
     console.log('error with listener');
   }
 }
 
 function* putTasksWatcher() {
-  yield takeEvery(PUT_TO_LOCAL_STORAGE, putTasksWorker);
   yield takeEvery(LOAD_PAGE, catchUnloadChannel);
 }
 
